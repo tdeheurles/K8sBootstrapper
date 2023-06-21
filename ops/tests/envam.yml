@@ -1,0 +1,5 @@
+apiVersion: tdeheurles.com/v1alpha1
+kind: envam
+metadata:
+  name: env-am
+spec: {}

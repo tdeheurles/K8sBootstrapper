@@ -1,0 +1,66 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xenvam
+spec:
+  compositeTypeRef:
+    apiVersion: tdeheurles.com/v1alpha1
+    kind: xenvam
+  resources:
+    - name: postgres-workload
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        metadata:
+          name: postgres
+        spec:
+          providerConfigRef:
+            name: kubernetes-provider
+          forProvider:
+            manifest:
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: postgres
+                namespace: default
+              spec:
+                selector:
+                  matchLabels:
+                    app: postgres
+                template:
+                  metadata:
+                    labels:
+                      app: postgres
+                  spec:
+                    containers:
+                    - name: postgres
+                      image: postgres:15.3
+                      resources:
+                        limits:
+                          memory: "128Mi"
+                          cpu: "500m"
+                      ports:
+                      - containerPort: 5432
+                        name: postgres
+    - name: postgres-service
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        metadata:
+          name: postgres-service
+        spec:
+          providerConfigRef:
+            name: kubernetes-provider
+          forProvider:
+            manifest:
+              apiVersion: v1
+              kind: Service
+              metadata:
+                name: postgres-service
+                namespace: default
+              spec:
+                ports:
+                - port: 5432
+                  targetPort: 5432
+                selector:
+                  app: postgres

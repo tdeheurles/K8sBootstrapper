@@ -1,0 +1,30 @@
+# apiVersion: tdeheurles.com/v1alpha1
+# kind: database
+# metadata:
+#   name: cluster-db
+# spec: 
+#   region: "ireland"
+# ---
+# apiVersion: custom-api.example.org/v1alpha1
+# kind: database
+# metadata:
+#   name: cluster-db
+#   # annotations:
+#   #   crossplane.io/external-name: cluster-db-92k65
+# spec: 
+#   region: "ireland"
+#   resourceRefs:
+#   - apiVersion: s3.aws.upbound.io/v1beta1
+#     kind: Bucket
+#     name: cluster-db-92k65
+#   - apiVersion: dynamodb.aws.upbound.io/v1beta1
+#     kind: Table
+#     name: cluster-db-sxzn9
+---
+apiVersion: custom-api.example.org/v1alpha1
+kind: custom-database
+metadata:
+  name: namespaced-db
+  namespace: test2
+spec: 
+  region: "eu-west-1"

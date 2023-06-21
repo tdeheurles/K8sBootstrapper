@@ -1,0 +1,12 @@
+args:
+  - "--debug"
+  - "--enable-composition-functions"
+  - "--enable-composition-revisions"
+  #- "--enable-composition-webhook-schema-validation"
+  # - "--enable-environment-configs"
+  # - "--enable-external-secret-stores"
+  # - "--poll-interval=1"
+xfn:
+  enabled: true
+  args:
+    - "--debug"

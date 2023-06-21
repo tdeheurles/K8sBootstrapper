@@ -1,0 +1,11 @@
+apiVersion: s3.aws.upbound.io/v1beta1
+kind: Bucket
+metadata:
+  name: demo-for-cargill
+  labels:
+    foo: bar
+spec:
+  forProvider:
+    region: eu-west-3
+  providerConfigRef:
+    name: default

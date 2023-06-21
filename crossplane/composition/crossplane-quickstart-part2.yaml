@@ -1,0 +1,87 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: databases.custom-api.example.org
+spec:
+  group: custom-api.example.org
+  names:
+    kind: database
+    plural: databases
+  claimNames:
+    kind: custom-database
+    plural: custom-databases
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              region:
+                type: string
+                oneOf:
+                  - pattern: '^ireland$'
+                  - pattern: '^london$'
+                  - pattern: '^paris$'
+            required:
+              - region
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: dynamodb-with-bucket
+spec:
+  compositeTypeRef:
+    apiVersion: custom-api.example.org/v1alpha1
+    kind: database
+  resources:
+    - name: s3Bucket
+      base:
+        apiVersion: s3.aws.upbound.io/v1beta1
+        kind: Bucket
+        metadata:
+          name: crossplane-quickstart-bucket
+        spec:
+          forProvider:
+            tags:
+              foo: bar
+          providerConfigRef:
+            name: default
+      patches:
+        - fromFieldPath: "spec.region"
+          toFieldPath: spec.forProvider.region
+          transforms:
+            - type: map
+              map:
+                ireland: "eu-west-1"
+                london: "eu-west-2"
+                paris: "eu-west-3"
+    - name: dynamoDB
+      base:
+        apiVersion: dynamodb.aws.upbound.io/v1beta1
+        kind: Table
+        metadata:
+          name: crossplane-quickstart-database
+        spec:
+          forProvider:
+            tags:
+              foo: bar
+            writeCapacity: 1
+            readCapacity: 1
+            attribute:
+              - name: S3ID
+                type: S
+            hashKey: S3ID
+      patches:
+        - fromFieldPath: "spec.region"
+          toFieldPath: spec.forProvider.region
+          transforms:
+            - type: map
+              map:
+                ireland: "eu-west-1"
+                london: "eu-west-2"
+                paris: "eu-west-3"

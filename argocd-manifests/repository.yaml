@@ -1,0 +1,15 @@
+apiVersion: repositories.argocd.crossplane.io/v1alpha1
+kind: Repository
+metadata:
+  name: gitops-docker-desktop.git
+spec:
+  forProvider:
+    passwordRef:
+      key: token
+      name: github-repository
+      namespace: argocd
+    repo: https://github.com/tdeheurles/gitops-docker-desktop.git
+    type: git
+    username: tdeheurles
+  providerConfigRef:
+    name: argocd-provider

@@ -1,0 +1,13 @@
+apiVersion: cluster.argocd.crossplane.io/v1alpha1
+kind: Cluster
+metadata:
+  name: docker-desktop
+spec:
+  forProvider:
+    config:
+      tlsClientConfig:
+        insecure: true
+    name: docker-desktop
+    server: https://kubernetes.default.svc
+  providerConfigRef:
+    name: argocd-provider
